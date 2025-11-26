@@ -24,7 +24,7 @@ jobs:
 ## Goals
 
 - Free lots of disk space by deleting tools that most workflows don't use.
-- Run in under 2 minutes.
+- Run in under 90 seconds.
 - Defaults should work for most workflows.
 - Allow customization to exclude or include paths.
 
@@ -84,21 +84,21 @@ jobs:
 
 ## FAQ
 
-#### How was the list of directories determined?
+### How was the list of directories determined?
 
 I ran `du -hs` on a bunch of directories in a GitHub actions runner to find what
 was taking up a lot of space.
 
 If you see something else that should be added, please create an issue or a PR.
 
-#### How are files removed?
+### How are files removed?
 
 Files are removed using `rm -rf`. We don't use `apt` to remove packages because
 that's slower.
 
-This does mean that a bunch of packages whose files are removed are broken, so
-things will probably break if you try to install a package that depends on one
-of these packages after running this action.
+This does break bunch of packages whose files are removed. If you try to install
+a package that depends on one of these packages after running this action, it
+will probably fail.
 
 [jlumbroso/free-disk-space]: https://github.com/jlumbroso/free-disk-space
 [ublue-os/remove-unwanted-software]:
