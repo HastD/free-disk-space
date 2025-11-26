@@ -67,6 +67,9 @@ To exclude one of the above directories from removal, use the `exclude` option.
 
 To include additional paths, use the `include` option.
 
+To skip disabling swap and removing the swapfile, pass `swapoff: false` to the
+action.
+
 For example:
 
 ```yaml
@@ -82,6 +85,7 @@ jobs:
             /usr/local/lib/android
           include: |
             /some/other/path
+          swapoff: false
 ```
 
 ## FAQ
