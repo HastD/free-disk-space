@@ -8,8 +8,6 @@ on the runners. We can free up a lot of disk space by removing tools that most
 workflows don't need. After running this action with default options, there
 should be about 63 GB of free space.
 
-Inspired by [jlumbroso/free-disk-space] and [ublue-os/remove-unwanted-software].
-
 ## Example
 
 ```yaml
@@ -105,6 +103,11 @@ that's slower.
 This does break bunch of packages whose files are removed. If you try to install
 a package that depends on one of these packages after running this action, it
 will probably fail.
+
+### What prior work was this based on?
+
+This was inspired by [jlumbroso/free-disk-space] and
+[ublue-os/remove-unwanted-software].
 
 [jlumbroso/free-disk-space]: https://github.com/jlumbroso/free-disk-space
 [ublue-os/remove-unwanted-software]:
