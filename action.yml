@@ -1,0 +1,63 @@
+name: Free disk space
+
+description: GitHub action to free disk space on Ubuntu GitHub Actions runners.
+
+inputs:
+  exclude:
+    description: "Don't remove paths matching this pattern"
+    required: false
+    default: ""
+  include:
+    description: "Additional file paths to remove"
+    required: false
+    default: ""
+  swapoff:
+    description: "Disable swap"
+    required: false
+    default: true
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        exclude_pattern: ${{ inputs.exclude }}
+        include_paths: ${{ inputs.include }}
+        swapoff: ${{ inputs.swapoff }}
+      run: |
+        echo "Disk usage (before):"
+        df -h
+
+        if [[ "${swapoff}" == 'true' ]]; then
+          sudo swapoff -a || true
+          sudo rm -f /mnt/swapfile
+        fi
+
+        paths_to_remove=(
+          /etc/skel
+          /home/packer
+          /opt/{az,google,hostedtoolcache,microsoft}
+          /usr/lib/{firefox,google-cloud-sdk,jvm,llvm-*}
+          /usr/local/{.ghcup,aws-cli,aws-sam-cli,julia1.12.1}
+          /usr/local/lib/{android,node_modules}
+          /usr/local/share/{chromium,powershell}
+          /usr/share/{az_12.5.0,miniconda,swift}
+        )
+
+        if [[ -n "${exclude_paths}" ]]; then
+          for index in "${!paths_to_remove[@]}"; do
+            if [[ "${paths_to_remove[$index]}" =~ $exclude_pattern ]]; then
+              unset -v 'paths_to_remove[$index]'
+            fi
+          done
+          paths_to_remove=("${paths_to_remove[@]}")
+        fi
+
+        paths_to_remove+=($include_paths)
+
+        echo "Removing the following files/directories:"
+        printf '%s\n' "${paths_to_remove[@]}"
+        printf '%s\0' "${paths_to_remove[@]}" | sudo xargs -0 -n1 -P4 rm -rf -- || true
+
+        echo "Disk usage (after):"
+        df -h

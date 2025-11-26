@@ -1,0 +1,28 @@
+name: Test action
+
+on: push
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-default:
+    name: Test action with default settings
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: hastd/free-disk-space@main # zizmor: ignore[unpinned-uses]
+
+  test-exclude:
+    name: Test action with path excluded
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: hastd/free-disk-space@main # zizmor: ignore[unpinned-uses]
+        with:
+          exclude: 'android'
+
+      - name: Check exclude worked
+        run: |
+          [ -d /usr/local/lib/android ]
