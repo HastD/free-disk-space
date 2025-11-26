@@ -44,7 +44,7 @@ runs:
           /usr/share/{az_12.5.0,miniconda,swift}
         )
 
-        if [[ -n "${exclude_paths}" ]]; then
+        if [[ -n "${exclude_pattern}" ]]; then
           for index in "${!paths_to_remove[@]}"; do
             if [[ "${paths_to_remove[$index]}" =~ $exclude_pattern ]]; then
               unset -v 'paths_to_remove[$index]'
@@ -55,9 +55,11 @@ runs:
 
         paths_to_remove+=($include_paths)
 
+        echo
         echo "Removing the following files/directories:"
         printf '%s\n' "${paths_to_remove[@]}"
         printf '%s\0' "${paths_to_remove[@]}" | sudo xargs -0 -n1 -P4 rm -rf -- || true
 
+        echo
         echo "Disk usage (after):"
         df -h
