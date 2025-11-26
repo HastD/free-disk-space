@@ -6,7 +6,7 @@ The Linux (Ubuntu) GitHub actions runners have 72 GB of total disk space, but
 only 19 GB is initially available due to the large number of tools preinstalled
 on the runners. We can free up a lot of disk space by removing tools that most
 workflows don't need. After running this action with default options, there
-should be about 59 GB of free space.
+should be about 63 GB of free space.
 
 Inspired by [jlumbroso/free-disk-space] and [ublue-os/remove-unwanted-software].
 
@@ -39,6 +39,7 @@ By default, this action deletes the swapfile and the following directories:
 | `/opt/az`                     | Microsoft Azure CLI                  |
 | `/opt/google`                 | Google Chrome                        |
 | `/opt/microsoft`              | Microsoft Edge, PowerShell           |
+| `/opt/pipx`                   | pipx (Python package installer)      |
 | `/opt/hostedtoolcache/CodeQL` | CodeQL                               |
 | `/opt/hostedtoolcache/PyPy`   | PyPy                                 |
 | `/opt/hostedtoolcache/Python` | Python (various versions & packages) |
@@ -59,6 +60,7 @@ By default, this action deletes the swapfile and the following directories:
 | `/usr/local/share/powershell` | PowerShell                           |
 | `/usr/share/az_12.5.0`        | Microsoft Azure CLI                  |
 | `/usr/share/miniconda`        | Miniconda                            |
+| `/usr/share/dotnet`           | .NET                                 |
 | `/usr/share/swift`            | Swift                                |
 
 To exclude one of the above directories from removal, use the `exclude` option.

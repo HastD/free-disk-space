@@ -36,13 +36,13 @@ runs:
         paths_to_remove=(
           /etc/skel
           /home/packer
-          /opt/{az,google,microsoft}
+          /opt/{az,google,microsoft,pipx}
           /opt/hostedtoolcache/{CodeQL,PyPy,Python,Ruby,go,node}
           /usr/lib/{firefox,google-cloud-sdk,jvm,llvm-*}
           /usr/local/{.ghcup,aws-cli,aws-sam-cli,julia1.12.1}
           /usr/local/lib/{android,node_modules}
           /usr/local/share/{chromium,powershell}
-          /usr/share/{az_12.5.0,miniconda,swift}
+          /usr/share/{az_12.5.0,dotnet,miniconda,swift}
         )
 
         if [[ -n "${exclude_paths}" ]]; then
