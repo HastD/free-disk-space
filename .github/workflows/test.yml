@@ -16,13 +16,15 @@ jobs:
       - uses: hastd/free-disk-space@main # zizmor: ignore[unpinned-uses]
 
   test-exclude:
-    name: Test action with path excluded
+    name: Test action with paths excluded
     runs-on: ubuntu-24.04
     steps:
       - uses: hastd/free-disk-space@main # zizmor: ignore[unpinned-uses]
         with:
-          exclude: 'android'
+          exclude: |
+            /usr/local/lib/android
+            /usr/local/share/powershell
 
       - name: Check exclude worked
         run: |
-          [ -d /usr/local/lib/android ]
+          [ -d /usr/local/lib/android ] && [ -d /usr/local/share/powershell ]

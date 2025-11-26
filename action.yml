@@ -4,7 +4,7 @@ description: GitHub action to free disk space on Ubuntu GitHub Actions runners.
 
 inputs:
   exclude:
-    description: "Don't remove paths matching this pattern"
+    description: "File paths not to remove"
     required: false
     default: ""
   include:
@@ -21,11 +21,11 @@ runs:
   steps:
     - shell: bash
       env:
-        exclude_pattern: ${{ inputs.exclude }}
+        exclude_paths: ${{ inputs.exclude }}
         include_paths: ${{ inputs.include }}
         swapoff: ${{ inputs.swapoff }}
       run: |
-        echo "Disk usage (before):"
+        echo 'Disk usage (before):'
         df -h
 
         if [[ "${swapoff}" == 'true' ]]; then
@@ -36,7 +36,8 @@ runs:
         paths_to_remove=(
           /etc/skel
           /home/packer
-          /opt/{az,google,hostedtoolcache,microsoft}
+          /opt/{az,google,microsoft}
+          /opt/hostedtoolcache/{CodeQL,PyPy,Python,Ruby,go,node}
           /usr/lib/{firefox,google-cloud-sdk,jvm,llvm-*}
           /usr/local/{.ghcup,aws-cli,aws-sam-cli,julia1.12.1}
           /usr/local/lib/{android,node_modules}
@@ -44,10 +45,19 @@ runs:
           /usr/share/{az_12.5.0,miniconda,swift}
         )
 
-        if [[ -n "${exclude_pattern}" ]]; then
-          for index in "${!paths_to_remove[@]}"; do
-            if [[ "${paths_to_remove[$index]}" =~ $exclude_pattern ]]; then
-              unset -v 'paths_to_remove[$index]'
+        if [[ -n "${exclude_paths}" ]]; then
+          for exclude_path in $exclude_paths; do
+            path_found=0
+            for index in "${!paths_to_remove[@]}"; do
+              if [[ "${paths_to_remove[$index]}" == "${exclude_path}" ]]; then
+                unset -v 'paths_to_remove[$index]'
+                path_found=1
+                break
+              fi
+            done
+            if [[ "${path_found}" == 0 ]]; then
+              echo "WARNING: Path '${exclude_path}' was marked to be excluded, but is not on" >&2
+              echo 'the list of paths to be removed. Possible typo?' >&2
             fi
           done
           paths_to_remove=("${paths_to_remove[@]}")
@@ -55,11 +65,11 @@ runs:
 
         paths_to_remove+=($include_paths)
 
-        echo
-        echo "Removing the following files/directories:"
+        echo '-----'
+        echo 'Removing the following files/directories:'
         printf '%s\n' "${paths_to_remove[@]}"
         printf '%s\0' "${paths_to_remove[@]}" | sudo xargs -0 -n1 -P4 rm -rf -- || true
 
-        echo
-        echo "Disk usage (after):"
+        echo '-----'
+        echo 'Disk usage (after):'
         df -h
