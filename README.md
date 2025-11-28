@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
-        uses: hastd/free-disk-space@v0.1.0
+        uses: hastd/free-disk-space@v0.1.1
 ```
 
 ## Goals
 
 - Free lots of disk space by deleting tools that most workflows don't use.
-- Run in under 90 seconds.
+- Run in under 100 seconds.
 - Defaults should work for most workflows.
 - Allow customization to exclude or include paths.
 
