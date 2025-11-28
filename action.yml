@@ -68,7 +68,7 @@ runs:
         echo '-----'
         echo 'Removing the following files/directories:'
         printf '%s\n' "${paths_to_remove[@]}"
-        printf '%s\0' "${paths_to_remove[@]}" | sudo xargs -0 -n1 -P8 rm -rf -- || true
+        printf '%s\0' "${paths_to_remove[@]}" | sudo xargs -0 -n1 -P"$(nproc)" rm -rf -- || true
 
         echo '-----'
         echo 'Disk usage (after):'
