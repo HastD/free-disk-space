@@ -98,8 +98,8 @@ If you see something else that should be added, please create an issue or a PR.
 
 ### How are files removed?
 
-Files are removed using `rm -rf`, with `xargs` being used to remove directories
-in parallel. We don't use `apt` to remove packages because that's slower.
+Files are removed using `rm -rf`, parallelized using `xargs`. We don't use `apt`
+to remove packages because that's slower.
 
 This likely does break packages whose files are removed. If you try to install a
 package that depends on one of these packages after running this action, it will
