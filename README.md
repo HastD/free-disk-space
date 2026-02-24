@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: hastd/free-disk-space@v0.1.1
+        uses: hastd/free-disk-space@v0.1.2
 ```
 
 ## Goals
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: hastd/free-disk-space@v0.1.0
+        uses: hastd/free-disk-space@v0.1.2
         with:
           exclude: |
             /opt/hostedtoolcache/Python
