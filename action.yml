@@ -15,6 +15,10 @@ inputs:
     description: "Disable swap"
     required: false
     default: true
+  skip-if-available:
+    description: "Skip freeing disk space if this much space (in gigabytes) is already available"
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -24,9 +28,24 @@ runs:
         exclude_paths: ${{ inputs.exclude }}
         include_paths: ${{ inputs.include }}
         swapoff: ${{ inputs.swapoff }}
+        skip_if_available: ${{ inputs.skip-if-available }}
       run: |
         echo 'Disk usage (before):'
         df -h
+
+        if [[ -n "${skip_if_available}" ]]; then
+          pattern='[0-9]+( ?[Gg]i?[Bb]?)?'
+          if ! [[ "${skip_if_available}" =~ $pattern ]]; then
+            echo "Invalid value of input 'skip-if-available': ${skip_if_available}" >&2
+            exit 1
+          fi
+          avail_kb=$(df -k --output=avail / | grep -Eo -m1 '[0-9]+')
+          skip_if_available="${skip_if_available//[^0-9]/}"
+          if (( avail_kb >= skip_if_available * 1024 * 1024 )); then
+            echo "At least ${skip_if_available} GiB disk space is already available; exiting."
+            exit 0
+          fi
+        fi
 
         if [[ "${swapoff}" == 'true' ]]; then
           sudo swapoff -a || true

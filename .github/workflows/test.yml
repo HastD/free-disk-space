@@ -28,3 +28,28 @@ jobs:
       - name: Check exclude worked
         run: |
           [ -d /usr/local/lib/android ] && [ -d /usr/local/share/powershell ]
+
+  test-skip-if-available:
+    name: Test action with skip-if-available
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Record available disk space
+        id: before
+        shell: bash
+        run: |
+          avail_kb=$(df -k --output=avail / | grep -Eo -m1 '[0-9]+')
+          echo "avail_kb=${avail_kb}" >> "${GITHUB_OUTPUT}"
+
+      - uses: hastd/free-disk-space@main # zizmor: ignore[unpinned-uses]
+        with:
+          skip-if-available: "8GB"
+
+      - name: Check freeing disk space was skipped
+        shell: bash
+        env:
+          avail_kb_before: ${{ steps.before.outputs.avail_kb }}
+        run: |
+          avail_kb_after=$(df -k --output=avail / | grep -Eo -m1 '[0-9]+')
+          # Ensure less than 100 MB disk space has been freed
+          (( avail_kb_after - avail_kb_before < 100 * 1024 ))
+
