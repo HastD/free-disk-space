@@ -13,7 +13,7 @@ should be about 63 GB of free space.
 ```yaml
 jobs:
   example:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Free disk space
         uses: hastd/free-disk-space@v0.1.1
@@ -69,12 +69,15 @@ To include additional paths, use the `include` option.
 To skip disabling swap and removing the swapfile, pass `swapoff: false` to the
 action.
 
+To skip freeing disk space if a given amount of space (in gigabytes) is already
+available, use the `skip-if-available` option.
+
 For example:
 
 ```yaml
 jobs:
   example:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Free disk space
         uses: hastd/free-disk-space@v0.1.0
@@ -85,6 +88,7 @@ jobs:
           include: |
             /some/other/path
           swapoff: false
+          skip-if-available: "64G"
 ```
 
 ## FAQ
